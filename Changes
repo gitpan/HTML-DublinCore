@@ -1,5 +1,9 @@
 Revision history for Perl extension HTML::DublinCore
 
+0.4   Mon Nov 15 12:45:13 CST 2004
+        - modified to use new DublinCore::Record framework (thanks Brian
+          Cassidy)
+
 0.3   Mon Aug 25 09:42:01 2003
 	- Doc fix (thanks Brian Cassidy)
 	- Fixed test warnings under new Test::Harness.
