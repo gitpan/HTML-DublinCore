@@ -1,5 +1,8 @@
 Revision history for Perl extension HTML::DublinCore
 
+0.2   Sun May 25 12:01:45 2003
+	- added note about support list dc@inkdroid.org
+
 0.1   Thu Mar 20 06:36:12 2003
 	- documentation changes
 	- made element() return empty HTML::DublinCore::Element object 

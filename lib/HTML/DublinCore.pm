@@ -6,7 +6,7 @@ use Carp qw( croak );
 use base qw( HTML::Parser );
 use HTML::DublinCore::Element;
 
-our $VERSION = .1;
+our $VERSION = .2;
 
 =head1 NAME
 

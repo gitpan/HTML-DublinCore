@@ -6,6 +6,7 @@ element metadata set for describing electronic resources. For more information
 about Dublin Core see http://www.dublincore.org/documents/dces/, and for 
 more information about using HTML::DublinCore see the perldoc.
 
+
 INSTALLATION
 
 To install this module type the following:
@@ -15,11 +16,19 @@ To install this module type the following:
    make test
    make install
 
+
 DEPENDENCIES
 
 This module requires these other modules and libraries:
 
 HTML::Parser
+
+
+SUPPORT
+
+To discuss HTML::DublinCore join the dc@inkdroid.org discussion list by sending
+an email to dc-subscribe@inkdroid.org.
+
 
 COPYRIGHT AND LICENCE
 
