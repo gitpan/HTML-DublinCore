@@ -1,0 +1,8 @@
+Changes
+lib/HTML/DublinCore.pm
+lib/HTML/DublinCore/Element.pm
+Makefile.PL
+MANIFEST
+README
+t/01-use.t
+t/10-parse.t
