@@ -1,4 +1,4 @@
-HTML::DublinCore version 0.02
+HTML::DublinCore 
 ====================
 
 A module for extracting Dublin Core metadata from HTML. Dublin Core is a 15

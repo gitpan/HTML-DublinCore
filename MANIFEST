@@ -6,3 +6,4 @@ MANIFEST
 README
 t/01-use.t
 t/10-parse.t
+t/test.html
