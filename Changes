@@ -1,5 +1,9 @@
 Revision history for Perl extension HTML::DublinCore
 
+0.04  Sun Mar 16 02:06:00 2003
+	- added element() method (good idea from Brian Cassidy)
+	- added docs to HTML::DublinCore::Element
+
 0.03  Sat Mar 15 06:05:00 2003
 	- added test.html to Manifest
 

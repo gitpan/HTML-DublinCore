@@ -6,7 +6,7 @@ use Carp qw( croak );
 use base qw( HTML::Parser );
 use HTML::DublinCore::Element;
 
-our $VERSION = .03;
+our $VERSION = .04;
 
 =head1 NAME
 
@@ -21,7 +21,7 @@ HTML::DublinCore - Extract Dublin Core metadata from HTML
 
   ## get the title element and print it's content
   my $title = $dc->title();
-  print "title: ",$creator->content(),"\n";
+  print "title: ",$titler->content(),"\n";
 
   ## list context will retrieve all of a particular element 
   foreach my $element ( $dc->creators() ) {
@@ -87,6 +87,80 @@ sub new {
     $self->init();
     $self->parse( $html );
 
+}
+
+=head1 element() 
+
+This method will return a relevant HTML::DublinCore::Element object. When 
+called in a scalar context element() will return the first relevant element
+found, and when called in a list context it will return all the relevant 
+elements (since Dublin Core elements are repeatable).
+
+    ## create HTML::DublinCore object from HTML
+    my $dc = HTML::DublinCore->new( $html );
+
+    ## retrieve first title element
+    my $element = $dc->element( 'Title' );
+    my $title = $element->content();
+
+    ## shorthand object chaining to extract element content
+    my $title = $dc->element( 'Title' )->content();
+
+    ## retrieve all creator elements
+    @creators = $dc->element( 'Creator' );
+    
+You can also retrieve qualified elements in a similar fashion. 
+
+    my $date = $dc->element( 'Date.created' )->content();
+
+=cut
+
+sub element {
+    my ($self,$name) = @_;
+    $name = lc( $name );
+
+    ## must be a valid DC element (with additional qualifier)
+    croak( "invalid Dublin Core element: $name" ) 
+	if ! grep { $name =~ /^$_/ } @VALID_ELEMENTS;
+    
+    ## extract qualifier if present
+    my $qualifier; 
+    ($name,$qualifier) = split /\./, $name;
+
+    my @elements = ();
+    foreach my $element ( @{ $self->{ "DC_$name" } } ) {
+	if ( $qualifier and $element->qualifier() =~ /$qualifier/i ) {
+	    push( @elements, $element );
+	} elsif ( !$qualifier ) {
+	    push( @elements, $element );
+	}
+    }
+
+    if ( wantarray ) { return @elements };
+    return( $elements[0] );
+
+}
+
+=head1 elements()
+
+Returns all the Dublin Core elements found as HTML::DublinCore::Element
+objects which you can then manipulate further.
+
+    my $dc = HTML::DublinCore->new( $html );
+    foreach my $element ( $dc->elements() ) {
+	print "name=", $element->name(), "\n";
+	print "content=", $element->content(), "\n";
+    }
+
+=cut 
+
+sub elements {
+    my $self = shift;
+    my @elements = ();
+    foreach my $type ( @VALID_ELEMENTS ) {
+	push( @elements, @{ $self->{ "DC_$type" } } );
+    }
+    return( @elements );
 }
 
 =head1 title()
@@ -305,6 +379,8 @@ sub asHtml {
 =head1 SEE ALSO
 
 =over 4 
+
+=item * HTML::DublinCore::Element
 
 =item * Dublin Core L<http://www.dublincore.org/>
 
