@@ -6,7 +6,7 @@ use Carp qw( croak );
 use base qw( HTML::Parser );
 use HTML::DublinCore::Element;
 
-our $VERSION = .04;
+our $VERSION = .1;
 
 =head1 NAME
 
@@ -20,21 +20,28 @@ HTML::DublinCore - Extract Dublin Core metadata from HTML
   my $dc = HTML::DublinCore->new( $html );
 
   ## get the title element and print it's content
-  my $title = $dc->title();
-  print "title: ",$titler->content(),"\n";
+  my $title = $dc->element( 'Title' );
+  print "title: ", $title->content(), "\n";
+
+  ## get the same title content in one step
+  print "title: ", $dc->element( 'Title' )->content(), "\n";
 
   ## list context will retrieve all of a particular element 
-  foreach my $element ( $dc->creators() ) {
-      print "creator: ",$element->creator(),"\n";
+  foreach my $element ( $dc->element( 'Creator' ) ) {
+      print "creator: ",$element->content(),"\n";
   }
+
+  ## qualified dublin core
+  my $creation = $dc->element( 'Date.created' )->content();
 
 =head1 DESCRIPTION
 
-HTML::DublinCore is a module for easily extracting Dublin Core metadata from
-withing HTML documents. The Dublin Core is a small set of metadata elements
-for describing information resources. Dublin Core is typically embedded in 
-the E<lt>HEADE<gt> of and HTML document using the E<lt>METAE<gt> tag.
-For more information see RFC 2731 L<http://www.ietf.org/rfc/rfc2731>
+HTML::DublinCore is a module for easily extracting Dublin Core metadata
+that is embedded in HTML documents. The Dublin Core is a small set of metadata 
+elements for describing information resources. Dublin Core is typically 
+stored in the E<lt>HEADE<gt> of and HTML document using the E<lt>METAE<gt> tag.
+For more information on embedding DublinCore in HTML see RFC 2731 
+L<http://www.ietf.org/rfc/rfc2731>
 
 HTML::DublinCore allows you to easily extract, and work with the Dublin Core
 metadata found in a particular HTML document.  For a definition of the 
@@ -89,7 +96,7 @@ sub new {
 
 }
 
-=head1 element() 
+=head2 element() 
 
 This method will return a relevant HTML::DublinCore::Element object. When 
 called in a scalar context element() will return the first relevant element
@@ -112,6 +119,10 @@ elements (since Dublin Core elements are repeatable).
 You can also retrieve qualified elements in a similar fashion. 
 
     my $date = $dc->element( 'Date.created' )->content();
+
+In order to fascilitate chaining element() will return an empty 
+MARC::DublinCore::Element object when the requested element does not
+exist.
 
 =cut
 
@@ -137,11 +148,17 @@ sub element {
     }
 
     if ( wantarray ) { return @elements };
-    return( $elements[0] );
+    return( $elements[0] ) if $elements[0];
+
+    ## otherwise return an empty element object to fascilitate
+    ## chaining when the element doesn't exist :
+    ## $dc->element( 'Title' )->content().
+
+    return( HTML::DublinCore::Element->new() );
 
 }
 
-=head1 elements()
+=head2 elements()
 
 Returns all the Dublin Core elements found as HTML::DublinCore::Element
 objects which you can then manipulate further.
@@ -163,9 +180,9 @@ sub elements {
     return( @elements );
 }
 
-=head1 title()
+=head2 title()
 
-Returns a HTML::Dublin::Core object for the title element. You can then 
+Returns an HTML::DublinCore::Element object for the title element. You can then 
 retrieve content, qualifier, scheme, lang attributes like so. 
 
     my $dc = HTML::DublinCore->new( $html );
@@ -177,7 +194,7 @@ retrieve content, qualifier, scheme, lang attributes like so.
 
 Since there can be multiple instances of a particular element type (title,
 creator, subject, etc) you can retrieve multiple title elements by calling
-title() in a scalar context.
+title() in a list context.
 
     my @titles = $dc->title();
     foreach my $title ( @titles ) {
@@ -191,7 +208,7 @@ sub title {
     return( $self->_getElement( 'title', wantarray ) );
 }
 
-=head1 creator()
+=head2 creator()
 
 Retrieve creator information in the same manner as title().
 
@@ -202,7 +219,7 @@ sub creator {
     return( $self->_getElement( 'creator', wantarray ) );
 }
 
-=head1 subject()
+=head2 subject()
 
 Retrieve subject information in the same manner as title().
 
@@ -213,7 +230,7 @@ sub subject {
     return( $self->_getElement( 'subject', wantarray ) );
 }
 
-=head1 description()
+=head2 description()
 
 Retrieve description information in the same manner as title().
 
@@ -224,7 +241,7 @@ sub description {
     return( $self->_getElement( 'description', wantarray ) );
 }
 
-=head1 publisher()
+=head2 publisher()
 
 Retrieve publisher  information in the same manner as title().
 
@@ -235,7 +252,7 @@ sub publisher {
     return( $self->_getElement( 'publisher', wantarray ) );
 }
 
-=head1 contribtor()
+=head2 contribtor()
 
 Retrieve contributor information in the same manner as title().
 
@@ -246,7 +263,7 @@ sub contributor {
     return( $self->_getElement( 'contributor', wantarray ) );
 }
 
-=head1 date()
+=head2 date()
 
 Retrieve date information in the same manner as title().
 
@@ -257,7 +274,7 @@ sub date {
     return( $self->_getElement( 'date', wantarray ) );
 }
 
-=head1 type()
+=head2 type()
 
 Retrieve type information in the same manner as title().
 
@@ -268,7 +285,7 @@ sub type {
     return( $self->_getElement( 'type', wantarray ) );
 }
 
-=head1 format()
+=head2 format()
 
 Retrieve format information in the same manner as title().
 
@@ -279,7 +296,7 @@ sub format {
     return( $self->_getElement( 'format', wantarray ) );
 }
 
-=head1 identifier()
+=head2 identifier()
 
 Retrieve identifier information in the same manner as title().
 
@@ -290,7 +307,7 @@ sub identifier {
     return( $self->_getElement( 'identifier', wantarray ) );
 }
 
-=head1 source()
+=head2 source()
 
 Retrieve source information in the same manner as title().
 
@@ -301,7 +318,7 @@ sub source {
     return( $self->_getElement( 'source', wantarray ) );
 }
 
-=head1 language()
+=head2 language()
 
 Retrieve language information in the same manner as title().
 
@@ -312,7 +329,7 @@ sub language {
     return( $self->_getElement( 'language', wantarray ) );
 }
 
-=head1 relation()
+=head2 relation()
 
 Retrieve relation information in the same manner as title().
 
@@ -323,7 +340,7 @@ sub relation {
     return( $self->_getElement( 'relation', wantarray ) );
 }
 
-=head1 coverage()
+=head2 coverage()
 
 Retrieve coverage information in the same manner as title().
 
@@ -334,7 +351,7 @@ sub coverage {
     return( $self->_getElement( 'coverage', wantarray ) );
 }
 
-=head1 rights()
+=head2 rights()
 
 Retrieve rights information in the same manner as title().
 
@@ -345,7 +362,7 @@ sub rights {
     return( $self->_getElement( 'rights', wantarray ) );
 }
 
-=head1 asHtml() 
+=head2 asHtml() 
 
 Serialize your Dublin Core metadata as HTML E<lt>METAE<gt> tags.
 
@@ -464,7 +481,7 @@ sub _getElement {
     my $contents = $self->{ "DC_$element" };
     if ( $wantarray ) { return( @$contents ); }
     elsif ( scalar( @$contents ) > 0 ) { return( $contents->[0] ); }
-    return( undef );
+    return( HTML::DublinCore::Element->new() );
 }
 
 1;
