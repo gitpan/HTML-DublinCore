@@ -1,5 +1,9 @@
 Revision history for Perl extension HTML::DublinCore
 
+0.3   Mon Aug 25 09:42:01 2003
+	- Doc fix (thanks Brian Cassidy)
+	- Fixed test warnings under new Test::Harness.
+
 0.2   Sun May 25 12:01:45 2003
 	- added note about support list dc@inkdroid.org
 

@@ -19,10 +19,10 @@ foreach ( $dc->elements() ) {
     isa_ok( $_, 'HTML::DublinCore::Element' );
 }
 
-my $title = $dc->element( 'Title' );
+$title = $dc->element( 'Title' );
 isa_ok( $title, 'HTML::DublinCore::Element', 'element() in scalar context' );
 
-my @creators = $dc->element( 'Creator' );
+@creators = $dc->element( 'Creator' );
 is( scalar(@creators), 2, 'element() in list context' );
 
 my $date = $dc->element( 'Date.created' );

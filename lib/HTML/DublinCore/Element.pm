@@ -154,7 +154,7 @@ sub asHtml {
 =cut
 
 sub _clean {
-    my $x = shift;
+    my $x = shift || '';
     $x=~s/</&lt;/g;
     $x=~s/>/&gt;/g;
     $x=~s/&/&amp;/g;

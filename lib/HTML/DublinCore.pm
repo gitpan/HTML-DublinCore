@@ -6,7 +6,7 @@ use Carp qw( croak );
 use base qw( HTML::Parser );
 use HTML::DublinCore::Element;
 
-our $VERSION = .2;
+our $VERSION = .3;
 
 =head1 NAME
 
@@ -121,7 +121,7 @@ You can also retrieve qualified elements in a similar fashion.
     my $date = $dc->element( 'Date.created' )->content();
 
 In order to fascilitate chaining element() will return an empty 
-MARC::DublinCore::Element object when the requested element does not
+HTML::DublinCore::Element object when the requested element does not
 exist.
 
 =cut
